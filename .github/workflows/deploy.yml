@@ -1,0 +1,47 @@
+name: Deploy
+
+# Автодеплой на VPS после зелёного CI в main. Запуск вручную — вкладка Actions → Deploy → Run.
+# Секреты репозитория (Settings → Secrets and variables → Actions):
+#   VPS_HOST, VPS_USER, VPS_SSH_KEY (приватный ключ), DEPLOY_URL (https://ваш-домен)
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    # SEC-04: секреты VPS — в Environment «production»; в его настройках можно включить ручное подтверждение
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check secrets
+        id: check
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          if [ -z "$HOST" ]; then echo "VPS_HOST не задан — деплой пропущен"; echo "skip=1" >> "$GITHUB_OUTPUT"; fi
+      - name: Pull & restart on VPS
+        if: steps.check.outputs.skip != '1'
+        uses: appleboy/ssh-action@7eaf76671a0d7eec5d98ee897acda4f968735a17 # v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          fingerprint: ${{ secrets.VPS_FINGERPRINT }}
+          # Пользователь deploy с forced command (deploy/harden-deploy-user.sh) игнорирует script и
+          # выполняет только /usr/local/sbin/gorky-deploy. Пока VPS_USER=root — работает этот script.
+          script: |
+            set -e
+            if [ -x /usr/local/sbin/gorky-deploy ]; then sudo -n /usr/local/sbin/gorky-deploy; else
+              cd /opt/gorky_code && make shared-up && docker image prune -f >/dev/null; fi
+      - name: Smoke test
+        if: steps.check.outputs.skip != '1'
+        run: ./deploy/smoke.sh "${{ secrets.DEPLOY_URL }}"

@@ -1,0 +1,18 @@
+# Профиль для QA-прогонов голоса поверх docker-compose.yml (локально, не на стенде):
+#   docker compose -f docker-compose.yml -f docker-compose.override.yml -f qa/compose.qa.yml up -d
+# Настоящие NLU, диалог, PostgreSQL и GigaAM; «сейчас» как в golden_eval — тогда run_voice.py
+# включает проверки эталона. TTS выключен (не нужен для оценки и экономит CPU).
+# Вариант модели — аргумент сборки GIGAAM_QUANTIZE (none | int8) из окружения: см. qa/ab_quant.py.
+services:
+  api:
+    environment:
+      APP_ENV: dev
+      FREEZE_NOW: "2026-10-21T14:00:00+03:00"
+      NLU_IMPL: real
+      DIALOG_IMPL: real
+      STORAGE_IMPL: postgres
+      STT_PROVIDER: gigaam
+      TTS_PROVIDER: none
+      LLM_PROVIDER: ${QA_LLM_PROVIDER:-rules}
+      VOICE_PARTIALS: "0"
+      VOICE_TORCH_THREADS: ${VOICE_TORCH_THREADS:-2}

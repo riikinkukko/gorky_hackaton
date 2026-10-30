@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QA-записи «Помню»</title>
+<style>
+  :root { --bg:#fff; --fg:#1b1b1f; --mut:#6b6b76; --line:#e4e4ea; --acc:#2f6fed; --rec:#d93025; --ok:#188038; --cur:#eef3fe; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#151518; --fg:#ececf1; --mut:#9a9aa6; --line:#2c2c33; --acc:#7aa2ff; --rec:#ff6b5e; --ok:#5bd17d; --cur:#1f2636; } }
+  * { box-sizing:border-box }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; max-width:860px; margin-inline:auto }
+  h1 { font-size:20px; margin:0 0 4px }
+  p { color:var(--mut); margin:4px 0 12px }
+  .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px }
+  input, select, button { font:inherit; padding:7px 10px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--fg) }
+  button { cursor:pointer } button.primary { background:var(--acc); border-color:var(--acc); color:#fff }
+  .lvl { height:6px; background:var(--line); border-radius:3px; overflow:hidden; flex:1; min-width:120px } .lvl i { display:block; height:100%; width:0; background:var(--ok) }
+  .row { display:grid; grid-template-columns:44px 1fr auto; gap:8px; align-items:center; padding:9px 8px; border-bottom:1px solid var(--line) }
+  .row.cur { background:var(--cur); border-radius:8px }
+  .qid { color:var(--mut); font:12px ui-monospace,monospace }
+  .rec { color:var(--rec); font-weight:600 } .done { color:var(--ok) }
+  kbd { border:1px solid var(--line); border-radius:4px; padding:0 4px; font-size:12px }
+  .hold { width:100%; padding:18px; font-size:17px; margin:10px 0; user-select:none; -webkit-user-select:none; touch-action:none }
+  .hold.on { background:var(--rec); border-color:var(--rec); color:#fff }
+</style>
+</head>
+<body>
+<h1>Записи для QA голоса</h1>
+<p>Читайте фразу так, как сказали бы ассистенту. <b>Зажмите</b> кнопку (или <kbd>Пробел</kbd>), скажите фразу, отпустите — как в приложении. <kbd>↓</kbd>/<kbd>↑</kbd> — следующая/предыдущая, <kbd>P</kbd> — прослушать. В конце «Скачать zip» и отправьте архив чату 7 (или распакуйте в <code>qa/audio/</code>).</p>
+<div class="bar">
+  <input id="sp" placeholder="имя латиницей" size="12">
+  <select id="dev"><option value="laptop">ноутбук</option><option value="phone">телефон</option><option value="headset">гарнитура</option></select>
+  <select id="env"><option value="quiet">тихо</option><option value="noise">шум</option></select>
+  <select id="mode" title="«как в приложении» — микрофон открывается при нажатии и закрывается при отпускании, как во фронте; «чистая» — микрофон открыт всё время, хвост 0,5 с">
+    <option value="app">как в приложении</option><option value="clean">чистая запись</option></select>
+  <select id="batch"><option value="1">партия 1 (20)</option><option value="all">все фразы</option></select>
+</div>
+<div class="bar"><select id="mic"></select><div class="lvl"><i id="lvl"></i></div><span id="count"></span><button class="primary" id="zip">Скачать zip</button></div>
+<button class="hold" id="hold">Зажмите и говорите</button>
+<div id="list"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+// PHRASES:BEGIN — генерирует qa/tools/make_phrases.py
+const ALL = [{"pid": "p01", "qid": "q01", "say": "Напомни мне завтра в 10 утра позвонить Ивану", "entities": ["Иван"], "batch": 1}, {"pid": "p04", "qid": "q04", "say": "Добавь встречу с командой завтра в 15:00", "entities": [], "batch": 1}, {"pid": "p07", "qid": "q07", "say": "Послезавтра в девять созвон с Альфой по CRM", "entities": ["Альфа", "CRM"], "batch": 1}, {"pid": "p10", "qid": "q10", "say": "Поставь созвон с Маяком 29 октября в 15:30", "entities": ["Маяк"], "batch": 1}, {"pid": "p19", "qid": "q19", "say": "Когда у меня была встреча с Иваном", "entities": ["Иван"], "batch": 1}, {"pid": "p22", "qid": "q22", "say": "Когда я последний раз звонил Сергею", "entities": ["Сергей"], "batch": 1}, {"pid": "p24", "qid": "q24", "say": "Что у нас было с Вектором", "entities": ["Вектор"], "batch": 1}, {"pid": "p25", "qid": "q25", "say": "Что я должен был отправить Марии", "entities": ["Мария"], "batch": 1}, {"pid": "p31", "qid": "q31", "say": "Перенеси встречу с Марией в субботу на 19:00", "entities": ["Мария"], "batch": 1}, {"pid": "p34", "qid": "q34", "say": "Удали напоминание позвонить Ивану на завтра", "entities": ["Иван"], "batch": 1}, {"pid": "p35", "qid": "q35", "say": "Слушай, закинь на завтра в полдень созвон с Вектором", "entities": ["Вектор"], "batch": 1}, {"pid": "p40", "qid": "q40", "say": "Завтра без пятнадцати десять созвон с Пульсом", "entities": ["Пульс"], "batch": 1}, {"pid": "p42", "qid": "q42", "say": "В среду в 18 созвон с Севером", "entities": ["Север"], "batch": 1}, {"pid": "p44", "qid": "q44", "say": "В следующую среду в 11 демо для Альфы", "entities": ["Альфа"], "batch": 1}, {"pid": "p47", "qid": "q47", "say": "Встреча с Дмитрием 5 ноября в 14:30 на полтора часа", "entities": ["Дмитрий"], "batch": 1}, {"pid": "p48", "qid": "q48", "say": "Добавь задачу подготовить ТЗ для Вектора", "entities": ["Вектор", "ТЗ"], "batch": 1}, {"pid": "p63", "qid": "q63", "say": "э-э ну короче напомни это самое завтра в восемь отправить протокол Елене", "entities": ["Елена"], "batch": 1}, {"pid": "p78", "qid": "q78", "say": "Когда ближайший созвон с Альфой", "entities": ["Альфа"], "batch": 1}, {"pid": "p80", "qid": "q80", "say": "Что я обсуждал с Еленой", "entities": ["Елена"], "batch": 1}, {"pid": "p89", "qid": "q89", "say": "Перенеси созвон с Орбитой на 16:30", "entities": ["Орбита"], "batch": 1}, {"pid": "p02", "qid": "q02", "say": "В пятницу нужно отправить отчет", "entities": [], "batch": 2}, {"pid": "p03", "qid": "q03", "say": "Поставь задачу купить билеты до конца недели", "entities": [], "batch": 2}, {"pid": "p05", "qid": "q05", "say": "В четверг в 11 у меня встреча с дизайнером", "entities": [], "batch": 2}, {"pid": "p06", "qid": "q06", "say": "Через два часа напомни проверить почту", "entities": [], "batch": 2}, {"pid": "p08", "qid": "q08", "say": "Поставь встречу с Иваном завтра", "entities": ["Иван"], "batch": 2}, {"pid": "p09", "qid": "q09", "say": "Напомни про договор", "entities": [], "batch": 2}, {"pid": "p11", "qid": "q11", "say": "Что у меня сегодня", "entities": [], "batch": 2}, {"pid": "p12", "qid": "q12", "say": "Какие планы на сегодня", "entities": [], "batch": 2}, {"pid": "p13", "qid": "q13", "say": "Есть ли у меня встречи сегодня", "entities": [], "batch": 2}, {"pid": "p14", "qid": "q14", "say": "Какие задачи у меня на завтра", "entities": [], "batch": 2}, {"pid": "p15", "qid": "q15", "say": "Что запланировано на эту неделю", "entities": [], "batch": 2}, {"pid": "p16", "qid": "q16", "say": "А на следующей неделе", "entities": [], "batch": 2}, {"pid": "p17", "qid": "q17", "say": "Что у меня в субботу", "entities": [], "batch": 2}, {"pid": "p18", "qid": "q18", "say": "Покажи все встречи в ноябре", "entities": [], "batch": 2}, {"pid": "p20", "qid": "q20", "say": "Найди задачу про презентацию", "entities": [], "batch": 2}, {"pid": "p21", "qid": "q21", "say": "Я когда-то ставил задачу по договору, найди её", "entities": [], "batch": 2}, {"pid": "p23", "qid": "q23", "say": "Найди демо по мобилке", "entities": [], "batch": 2}, {"pid": "p26", "qid": "q26", "say": "Найди планёрки по деньгам", "entities": [], "batch": 2}, {"pid": "p27", "qid": "q27", "say": "Какие были напоминалки про CRM", "entities": ["CRM"], "batch": 2}, {"pid": "p28", "qid": "q28", "say": "Найди всё про ТЗ", "entities": ["ТЗ"], "batch": 2}, {"pid": "p29", "qid": "q29", "say": "созвоны со Стартом", "entities": ["Старт"], "batch": 2}, {"pid": "p30", "qid": "q30", "say": "Найди встречу с Петром", "entities": ["Пётр"], "batch": 2}, {"pid": "p32", "qid": "q32", "say": "А её перенеси на завтра", "entities": [], "batch": 2}, {"pid": "p33", "qid": "q33", "say": "Отметь, что смету по мобильному приложению я проверил", "entities": [], "batch": 2}, {"pid": "p36", "qid": "q36", "say": "Запиши: в понедельник к девяти подготовить отчёт", "entities": [], "batch": 2}, {"pid": "p37", "qid": "q37", "say": "Послезавтра в 3 встреча с Ольгой", "entities": ["Ольга"], "batch": 2}, {"pid": "p38", "qid": "q38", "say": "Напомни вечером купить молоко", "entities": [], "batch": 2}, {"pid": "p39", "qid": "q39", "say": "Напомни утром позвонить Сергею", "entities": ["Сергей"], "batch": 2}, {"pid": "p41", "qid": "q41", "say": "Через 11 часов напомни проверить сервер", "entities": [], "batch": 2}, {"pid": "p43", "qid": "q43", "say": "В среду в 10 провести планёрку", "entities": [], "batch": 2}, {"pid": "p45", "qid": "q45", "say": "Каждый понедельник в 10 планёрка по CRM", "entities": ["CRM"], "batch": 2}, {"pid": "p46", "qid": "q46", "say": "Напоминай каждый день в 9 проверять почту", "entities": [], "batch": 2}, {"pid": "p49", "qid": "q49", "say": "Поставь демо проекта 1 ноября в 15:00", "entities": [], "batch": 2}, {"pid": "p50", "qid": "q50", "say": "Встреча с Еленой в субботу в 20:00", "entities": ["Елена"], "batch": 2}, {"pid": "p55", "qid": "q55", "say": "Напомни", "entities": [], "batch": 2}, {"pid": "p64", "qid": "q64", "say": "Покажи мои встречи на сегодня", "entities": [], "batch": 2}, {"pid": "p65", "qid": "q65", "say": "Чем я занят завтра", "entities": [], "batch": 2}, {"pid": "p66", "qid": "q66", "say": "Что у меня в пятницу", "entities": [], "batch": 2}, {"pid": "p67", "qid": "q67", "say": "Что у меня на выходных", "entities": [], "batch": 2}, {"pid": "p68", "qid": "q68", "say": "Что было вчера", "entities": [], "batch": 2}, {"pid": "p69", "qid": "q69", "say": "Что было на прошлой неделе", "entities": [], "batch": 2}, {"pid": "p70", "qid": "q70", "say": "Какие встречи на следующей неделе", "entities": [], "batch": 2}, {"pid": "p71", "qid": "q71", "say": "Есть напоминания на декабрь", "entities": [], "batch": 2}, {"pid": "p72", "qid": "q72", "say": "Что у меня осталось до конца недели", "entities": [], "batch": 2}, {"pid": "p73", "qid": "q73", "say": "Что запланировано на ноябрь", "entities": [], "batch": 2}, {"pid": "p75", "qid": "q75", "say": "Что у меня 31 ноября", "entities": [], "batch": 2}, {"pid": "p76", "qid": "q76", "say": "Когда я в последний раз звонил Ивану", "entities": ["Иван"], "batch": 2}, {"pid": "p77", "qid": "q77", "say": "Когда следующая встреча с Иваном", "entities": ["Иван"], "batch": 2}, {"pid": "p81", "qid": "q81", "say": "Найди все КП", "entities": ["КП"], "batch": 2}, {"pid": "p82", "qid": "q82", "say": "Когда я последний раз готовился к встрече с Вектором", "entities": ["Вектор"], "batch": 2}, {"pid": "p83", "qid": "q83", "say": "Что у меня было по хакатону в этом году", "entities": [], "batch": 2}, {"pid": "p84", "qid": "q84", "say": "Когда была последняя планёрка по деньгам", "entities": [], "batch": 2}, {"pid": "p85", "qid": "q85", "say": "Была ли у меня встреча с дизайнером", "entities": [], "batch": 2}, {"pid": "p86", "qid": "q86", "say": "Найди всё, что связано с деньгами и Иваном", "entities": ["Иван"], "batch": 2}, {"pid": "p87", "qid": "q87", "say": "Какие встречи с Иваном были в прошлом году", "entities": ["Иван"], "batch": 2}, {"pid": "p90", "qid": "q90", "say": "Сдвинь планёрку по интеграции 18 ноября на час позже", "entities": [], "batch": 2}, {"pid": "p91", "qid": "q91", "say": "Перенеси встречу с Марией на час раньше", "entities": ["Мария"], "batch": 2}, {"pid": "p94", "qid": "q94", "say": "Готово, вопросы для Максима подготовил", "entities": ["Максим"], "batch": 2}, {"pid": "p95", "qid": "q95", "say": "Удали созвон с Альфой первого ноября", "entities": ["Альфа"], "batch": 2}, {"pid": "p98", "qid": "q98", "say": "Привет! Что ты умеешь", "entities": [], "batch": 2}, {"pid": "p99", "qid": "q99", "say": "Какая погода завтра", "entities": [], "batch": 2}];
+// PHRASES:END
+const $ = id => document.getElementById(id);
+const blobs = {}; // key: file name → Blob
+let cur = 0, rec = null, stream = null, chunks = [], held = false;
+const S = (k, v) => { try { v === undefined ? (v = localStorage.getItem('qa-'+k)) : localStorage.setItem('qa-'+k, v); } catch {} return v; };
+for (const k of ['sp','dev','env','mode','batch']) { const v = S(k); if (v) $(k).value = v; $(k).onchange = () => { S(k, $(k).value); render(); }; }
+const phrases = () => $('batch').value === '1' ? ALL.filter(p => p.batch === 1) : ALL;
+const ext = m => m.includes('mp4') ? 'm4a' : m.includes('ogg') ? 'ogg' : 'webm';
+const sp = () => ($('sp').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'') || 'anon');
+const fname = (p, m) => `${sp()}__${$('dev').value}__${$('env').value}__${$('mode').value}__${p.qid}.${ext(m)}`;
+const keyOf = p => `${sp()}|${$('dev').value}|${$('env').value}|${$('mode').value}|${p.qid}`;
+
+function render() {
+  const ps = phrases(); cur = Math.min(cur, ps.length - 1);
+  $('list').innerHTML = ps.map((p, i) => {
+    const b = blobs[keyOf(p)];
+    return `<div class="row ${i === cur ? 'cur' : ''}" data-i="${i}"><span class="qid">${p.qid}</span><span>${p.say}</span>
+      <span>${rec && i === cur ? '<span class="rec">● запись</span>' : b ? `<span class="done">✓</span> <button data-play="${i}">▶</button>` : ''}</span></div>`;
+  }).join('');
+  $('count').textContent = `${ps.filter(p => blobs[keyOf(p)]).length}/${ps.length}`;
+  $('list').querySelector('.cur')?.scrollIntoView({block: 'nearest'});
+}
+async function getStream() {
+  const id = $('mic').value;
+  // те же ограничения, что у фронта (useRecorder.ts)
+  return navigator.mediaDevices.getUserMedia({audio: {deviceId: id ? {exact: id} : undefined,
+    echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1}});
+}
+function meter(s) {
+  const ctx = new AudioContext(), an = ctx.createAnalyser(); ctx.createMediaStreamSource(s).connect(an);
+  const buf = new Uint8Array(an.fftSize);
+  (function tick() { an.getByteTimeDomainData(buf); let m = 0; for (const v of buf) m = Math.max(m, Math.abs(v - 128));
+    $('lvl').style.width = Math.min(100, m / 1.28) + '%'; requestAnimationFrame(tick); })();
+}
+async function openMic() { stream?.getTracks().forEach(t => t.stop()); stream = await getStream(); meter(stream); }
+async function listMics() {
+  const devs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audioinput');
+  $('mic').innerHTML = devs.map(d => `<option value="${d.deviceId}">${d.label || 'микрофон'}</option>`).join('');
+}
+async function startRec() {
+  if (rec) return;
+  const p = phrases()[cur];
+  // «как в приложении»: микрофон открывается на нажатие, как во фронте (getUserMedia → start)
+  let s = stream;
+  if ($('mode').value === 'app') s = await getStream();
+  const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'].find(m => MediaRecorder.isTypeSupported(m)) || '';
+  const r = new MediaRecorder(s, mime ? {mimeType: mime} : undefined); chunks = [];
+  r.ondataavailable = e => e.data.size && chunks.push(e.data);
+  r.onstop = () => {
+    blobs[keyOf(p)] = Object.assign(new Blob(chunks, {type: r.mimeType}), {p, file: fname(p, r.mimeType)});
+    if ($('mode').value === 'app') s.getTracks().forEach(t => t.stop());
+    rec = null; cur = Math.min(cur + 1, phrases().length - 1); render();
+  };
+  r.start(250); rec = r; render();   // timeslice как во фронте
+}
+function stopRec() {
+  if (!rec) return;
+  const r = rec;
+  // «как в приложении»: стоп сразу при отпускании; «чистая»: хвост 0,5 с
+  if ($('mode').value === 'app') r.stop(); else setTimeout(() => r.stop(), 500);
+}
+function play(i) { const b = blobs[keyOf(phrases()[i])]; if (b) new Audio(URL.createObjectURL(b)).play(); }
+
+const hold = $('hold');
+const down = e => { e.preventDefault(); if (held) return; held = true; hold.classList.add('on'); startRec(); };
+const up = e => { e.preventDefault(); if (!held) return; held = false; hold.classList.remove('on'); stopRec(); };
+hold.addEventListener('pointerdown', down); hold.addEventListener('pointerup', up); hold.addEventListener('pointerleave', up);
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space' && !e.repeat) down(e);
+  else if (e.key === 'ArrowDown') { cur = Math.min(cur + 1, phrases().length - 1); render(); e.preventDefault(); }
+  else if (e.key === 'ArrowUp') { cur = Math.max(cur - 1, 0); render(); e.preventDefault(); }
+  else if (e.key.toLowerCase() === 'p' || e.key.toLowerCase() === 'з') play(cur);
+});
+document.addEventListener('keyup', e => { if (e.code === 'Space' && e.target.tagName !== 'INPUT') up(e); });
+$('list').onclick = e => {
+  const pl = e.target.closest('[data-play]'); if (pl) { play(+pl.dataset.play); return; }
+  const row = e.target.closest('.row'); if (row) { cur = +row.dataset.i; render(); }
+};
+$('mic').onchange = openMic;
+$('zip').onclick = async () => {
+  const items = Object.values(blobs); if (!items.length) return;
+  const zip = new JSZip(), rows = ['file,qid,ref,speaker,device,env,mode'];
+  for (const b of items) {
+    zip.file(b.file, b);
+    const [s, d, en, m] = b.file.split('__');
+    rows.push([b.file, b.p.qid, `"${b.p.say.replace(/"/g, '""')}"`, s, d, en, m].join(','));
+  }
+  zip.file('manifest.part.csv', rows.join('\n') + '\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(await zip.generateAsync({type: 'blob'}));
+  a.download = `qa-voice-${sp()}-${$('dev').value}-${$('env').value}.zip`; a.click();
+};
+(async () => {
+  if (!window.isSecureContext) { $('list').innerHTML = '<p>Микрофон работает только на https:// или http://localhost.</p>'; return; }
+  await openMic(); await listMics(); render();
+})();
+</script>
+</body>
+</html>

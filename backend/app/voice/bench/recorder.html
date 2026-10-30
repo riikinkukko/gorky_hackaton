@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Запись фраз для бенчмарка STT</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#6b6b66;--line:#e3e2dc;--acc:#c2410c;--ok:#15803d}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecebe6;--muted:#9a9a93;--line:#2c2c29;--acc:#fb923c;--ok:#4ade80}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:22px;margin:0 0 4px} p{color:var(--muted);margin:4px 0 16px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:sticky;top:0;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line);z-index:1}
+input,select,button{font:inherit;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--fg)}
+button{cursor:pointer} button.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.row{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:10px 6px;border-bottom:1px solid var(--line)}
+.row.cur{background:color-mix(in srgb,var(--acc) 10%,transparent)} .pid{color:var(--muted);font-variant-numeric:tabular-nums}
+.say{font-size:18px} .rec{color:var(--acc);font-weight:600} .done{color:var(--ok)}
+.meter{height:6px;width:120px;background:var(--line);border-radius:3px;overflow:hidden}.meter i{display:block;height:100%;width:0;background:var(--acc)}
+kbd{border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:13px}
+</style></head><body><main>
+<h1>Запись фраз для бенчмарка STT</h1>
+<p>Читайте фразу так, как сказали бы ассистенту. <kbd>Пробел</kbd> — начать/закончить запись, <kbd>↓</kbd>/<kbd>↑</kbd> — следующая/предыдущая, <kbd>P</kbd> — прослушать. В конце — «Скачать zip» и распаковать в <code>recordings/</code>. Запишите набор дважды: в тишине и с фоновым шумом (другое имя, например <code>artem-noise</code>).</p>
+<div class="bar">
+ <input id="speaker" placeholder="имя-латиницей" value="speaker1" size="14">
+ <select id="mic"></select>
+ <div class="meter"><i id="lvl"></i></div>
+ <span id="count" class="pid"></span>
+ <button class="primary" id="zip">Скачать zip</button>
+</div>
+<div id="list"></div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+const PHRASES = [{"pid": "p01", "say": "Напомни мне завтра в десять утра позвонить Ивану"}, {"pid": "p02", "say": "В пятницу нужно отправить отчёт"}, {"pid": "p03", "say": "Поставь задачу купить билеты до конца недели"}, {"pid": "p04", "say": "Добавь встречу с командой завтра в пятнадцать ноль ноль"}, {"pid": "p05", "say": "В четверг в одиннадцать у меня встреча с дизайнером"}, {"pid": "p06", "say": "Через два часа напомни проверить почту"}, {"pid": "p07", "say": "Послезавтра в девять созвон с Альфой по CRM"}, {"pid": "p08", "say": "Поставь встречу с Иваном завтра"}, {"pid": "p09", "say": "Напомни про договор"}, {"pid": "p10", "say": "Поставь созвон с Маяком двадцать девятого октября в пятнадцать тридцать"}, {"pid": "p11", "say": "Что у меня сегодня"}, {"pid": "p12", "say": "Какие планы на сегодня"}, {"pid": "p13", "say": "Есть ли у меня встречи сегодня"}, {"pid": "p14", "say": "Какие задачи у меня на завтра"}, {"pid": "p15", "say": "Что запланировано на эту неделю"}, {"pid": "p16", "say": "А на следующей неделе"}, {"pid": "p17", "say": "Что у меня в субботу"}, {"pid": "p18", "say": "Покажи все встречи в ноябре"}, {"pid": "p19", "say": "Когда у меня была встреча с Иваном"}, {"pid": "p20", "say": "Найди задачу про презентацию"}, {"pid": "p21", "say": "Я когда-то ставил задачу по договору, найди её"}, {"pid": "p22", "say": "Когда я последний раз звонил Сергею"}, {"pid": "p23", "say": "Найди демо по мобилке"}, {"pid": "p24", "say": "Что у нас было с Вектором"}, {"pid": "p25", "say": "Что я должен был отправить Марии"}, {"pid": "p26", "say": "Найди планёрки по деньгам"}, {"pid": "p27", "say": "Какие были напоминалки про CRM"}, {"pid": "p28", "say": "Найди всё про ТЗ"}, {"pid": "p29", "say": "Созвоны со Стартом"}, {"pid": "p30", "say": "Найди встречу с Петром"}, {"pid": "p31", "say": "Перенеси встречу с Марией в субботу на девятнадцать ноль ноль"}, {"pid": "p32", "say": "А её перенеси на завтра"}, {"pid": "p33", "say": "Отметь, что смету по мобильному приложению я проверил"}, {"pid": "p34", "say": "Удали напоминание позвонить Ивану на завтра"}, {"pid": "p35", "say": "В три"}, {"pid": "p36", "say": "Да"}, {"pid": "p37", "say": "Нет, в одиннадцать"}, {"pid": "p38", "say": "Отмени"}, {"pid": "p39", "say": "Каждый понедельник в десять планёрка с Еленой"}, {"pid": "p40", "say": "Поставь демо с Орбитой по аналитике в среду в шестнадцать сорок пять"}];
+const blobs = {}; let cur = 0, rec = null, stream = null, chunks = [], mime = '';
+const list = document.getElementById('list');
+function render(){
+  list.innerHTML = PHRASES.map((p,i)=>`<div class="row ${i===cur?'cur':''}" data-i="${i}">
+    <span class="pid">${p.pid}</span><span class="say">${p.say}</span>
+    <span>${rec && i===cur ? '<span class="rec">● запись</span>' : blobs[p.pid] ? '<span class="done">✓</span> <button data-play="'+p.pid+'">▶</button>' : ''}
+    <button data-rec="${i}">${rec && i===cur ? 'стоп' : 'запись'}</button></span></div>`).join('');
+  document.getElementById('count').textContent = `${Object.keys(blobs).length}/${PHRASES.length}`;
+  list.querySelector('.cur')?.scrollIntoView({block:'nearest'});
+}
+async function openMic(){
+  stream?.getTracks().forEach(t=>t.stop());
+  const id = document.getElementById('mic').value;
+  stream = await navigator.mediaDevices.getUserMedia({audio: id ? {deviceId:{exact:id}} : true});
+  const ctx = new AudioContext(), an = ctx.createAnalyser(); ctx.createMediaStreamSource(stream).connect(an);
+  const buf = new Uint8Array(an.fftSize);
+  (function tick(){ an.getByteTimeDomainData(buf); let m=0; for(const v of buf) m=Math.max(m,Math.abs(v-128));
+    document.getElementById('lvl').style.width = Math.min(100,m/1.28)+'%'; requestAnimationFrame(tick); })();
+}
+async function listMics(){
+  const devs = (await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='audioinput');
+  document.getElementById('mic').innerHTML = devs.map(d=>`<option value="${d.deviceId}">${d.label||'микрофон'}</option>`).join('');
+}
+function toggle(){
+  if (rec){ rec.stop(); return; }
+  mime = ['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/mp4'].find(m=>MediaRecorder.isTypeSupported(m)) || '';
+  rec = new MediaRecorder(stream, mime ? {mimeType:mime} : undefined); chunks = [];
+  rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  rec.onstop = () => { blobs[PHRASES[cur].pid] = new Blob(chunks,{type:rec.mimeType}); rec = null;
+                       cur = Math.min(cur+1, PHRASES.length-1); render(); };
+  rec.start(250); render();   // timeslice как в проде
+}
+function play(pid){ new Audio(URL.createObjectURL(blobs[pid])).play(); }
+list.addEventListener('click', e=>{
+  if (e.target.dataset.play) return play(e.target.dataset.play);
+  if (e.target.dataset.rec !== undefined){ if(!rec) cur = +e.target.dataset.rec; toggle(); return; }
+  const row = e.target.closest('.row'); if (row && !rec){ cur = +row.dataset.i; render(); }
+});
+document.addEventListener('keydown', e=>{
+  if (e.target.tagName==='INPUT') return;
+  if (e.code==='Space'){ e.preventDefault(); toggle(); }
+  if (e.code==='ArrowDown' && !rec){ e.preventDefault(); cur=Math.min(cur+1,PHRASES.length-1); render(); }
+  if (e.code==='ArrowUp' && !rec){ e.preventDefault(); cur=Math.max(cur-1,0); render(); }
+  if (e.code==='KeyP' && blobs[PHRASES[cur].pid]) play(PHRASES[cur].pid);
+});
+document.getElementById('mic').onchange = openMic;
+document.getElementById('zip').onclick = async ()=>{
+  const sp = (document.getElementById('speaker').value||'speaker').replace(/[^a-zA-Z0-9-]/g,'');
+  const zip = new JSZip();
+  for (const [pid,b] of Object.entries(blobs)){
+    const ext = b.type.includes('mp4') ? 'mp4' : b.type.includes('ogg') ? 'ogg' : 'webm';
+    zip.file(`${sp}/${sp}__${pid}.${ext}`, b);
+  }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(await zip.generateAsync({type:'blob'}));
+  a.download = `stt-bench-${sp}.zip`; a.click();
+};
+(async()=>{ try{ await openMic(); await listMics(); }catch(err){ list.innerHTML='<p>Нет доступа к микрофону: '+err.message+'. Откройте файл через localhost или https.</p>'; return; } render(); })();
+</script></body></html>

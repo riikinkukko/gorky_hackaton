@@ -1,0 +1,29 @@
+# секреты
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# node
+node_modules/
+frontend/dist/
+
+# модели и артефакты голоса (чат 4)
+models/
+*.wav
+*.ogg
+*.webm
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+incoming/

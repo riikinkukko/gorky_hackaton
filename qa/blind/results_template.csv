@@ -1,0 +1,2 @@
+participant,day,device,env,task,task_type,said,result,seconds,attempts,note
+П1,2026-10-26,iPhone,тихо,1,record_task,"(дословно, попытки через / )",✓,0,1,

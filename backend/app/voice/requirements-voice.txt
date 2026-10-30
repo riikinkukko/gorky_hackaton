@@ -1,0 +1,5 @@
+# Голосовой контур (чат 4). torch ставится отдельно из CPU-индекса — см. Dockerfile.
+httpx>=0.27
+numpy>=2.0
+# GigaAM: на PyPI лежит устаревшая 0.1.0, v3 — только из git. Коммит зафиксирован.
+gigaam @ git+https://github.com/salute-developers/GigaAM.git@7447938d791c4f3e643386ee22c33777004293a5

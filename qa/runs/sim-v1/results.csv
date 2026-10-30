@@ -1,0 +1,122 @@
+﻿file;qid;speaker;device;env;cls;wer;cer;ref;hyp;why;intent_voice;action_voice;intent_text;action_text;parity;golden_ok;audio_s;file_s;stt_ms;total_ms
+clean__q01;q01;sim;-;clean;OK;0.0;0.0;Напомни мне завтра в 10 утра позвонить Ивану;Напомни мне завтра в 10 утра позвонить Ивану;;create_item;created;create_item;created;True;True;;;0;23
+words__q01;q01;sim;-;words;OK;0.0;0.0;Напомни мне завтра в 10 утра позвонить Ивану;напомни мне завтра в десять утра позвонить ивану;;create_item;created;create_item;created;True;True;;;0;14
+asr__q01;q01;sim;-;asr;A;0.25;0.0;Напомни мне завтра в 10 утра позвонить Ивану;Напомни мне завтра в 10 утра позвонить и вану.;напомни мне завтра в десять утра позвонить [+и] [ивану→вану];create_item;created;create_item;created;False;True;;;0;19
+clean__q04;q04;sim;-;clean;OK;0.0;0.0;Добавь встречу с командой завтра в 15:00;Добавь встречу с командой завтра в 15:00;;create_item;created;create_item;created;True;True;;;0;17
+words__q04;q04;sim;-;words;B;0.0;0.0;Добавь встречу с командой завтра в 15:00;добавь встречу с командой завтра в пятнадцать ноль ноль;транскрипт верный, ответ другой: «Записал встречу «Встреча с командой ноль ноль» — чт, 22 октября, 15:00»;create_item;created;create_item;created;False;True;;;0;18
+asr__q04;q04;sim;-;asr;OK;0.0;0.0;Добавь встречу с командой завтра в 15:00;Добавь встречу с командой завтра в 15 00.;;create_item;created;create_item;created;True;True;;;0;18
+clean__q07;q07;sim;-;clean;OK;0.0;0.0;Послезавтра в девять созвон с Альфой по CRM;Послезавтра в девять созвон с Альфой по CRM;;create_item;created;create_item;created;True;True;;;0;16
+words__q07;q07;sim;-;words;B;0.0;0.0;Послезавтра в девять созвон с Альфой по CRM;послезавтра в девять созвон с альфой по срм;транскрипт верный, ответ другой: «Записал встречу «Созвон с альфой по срм» — пт, 23 октября, 09:00.»;create_item;created;create_item;created;False;True;;;0;17
+asr__q07;q07;sim;-;asr;B;0.0;0.0;Послезавтра в девять созвон с Альфой по CRM;Послезавтра в девять созвон с альфой по СРМ.;транскрипт верный, ответ другой: «Записал встречу «Созвон с альфой по СРМ» — пт, 23 октября, 09:00.»;create_item;created;create_item;created;False;True;;;0;16
+clean__q10;q10;sim;-;clean;OK;0.0;0.0;Поставь созвон с Маяком 29 октября в 15:30;Поставь созвон с Маяком 29 октября в 15:30;;create_item;conflict;create_item;conflict;True;True;;;0;11
+words__q10;q10;sim;-;words;OK;0.0;0.0;Поставь созвон с Маяком 29 октября в 15:30;поставь созвон с маяком двадцать девятого октября в пятнадцать тридцать;;create_item;conflict;create_item;conflict;True;True;;;0;11
+asr__q10;q10;sim;-;asr;OK;0.0;0.0;Поставь созвон с Маяком 29 октября в 15:30;Поставь созвон с маяком 29 октября в 15 30.;;create_item;conflict;create_item;conflict;True;True;;;0;11
+clean__q19;q19;sim;-;clean;OK;0.0;0.0;Когда у меня была встреча с Иваном?;Когда у меня была встреча с Иваном?;;search_items;found;search_items;found;True;True;;;0;9
+words__q19;q19;sim;-;words;OK;0.0;0.0;Когда у меня была встреча с Иваном?;когда у меня была встреча с иваном;;search_items;found;search_items;found;True;True;;;0;8
+asr__q19;q19;sim;-;asr;OK;0.143;0.036;Когда у меня была встреча с Иваном?;Когда у меня была встреча Иваном?;ASR-ошибка не помешала: когда у меня была встреча [-с] иваном;search_items;found;search_items;found;True;True;;;0;8
+clean__q22;q22;sim;-;clean;OK;0.0;0.0;Когда я последний раз звонил Сергею?;Когда я последний раз звонил Сергею?;;search_items;found;search_items;found;True;True;;;0;12
+words__q22;q22;sim;-;words;OK;0.0;0.0;Когда я последний раз звонил Сергею?;когда я последний раз звонил сергею;;search_items;found;search_items;found;True;True;;;0;12
+asr__q22;q22;sim;-;asr;OK;0.167;0.033;Когда я последний раз звонил Сергею?;Когда я последний раз звонил Сергей?;ASR-ошибка не помешала: когда я последний раз звонил [сергею→сергей];search_items;found;search_items;found;True;True;;;0;15
+clean__q24;q24;sim;-;clean;OK;0.0;0.0;Что у нас было с Вектором?;Что у нас было с Вектором?;;search_items;found;search_items;found;True;True;;;0;14
+words__q24;q24;sim;-;words;OK;0.0;0.0;Что у нас было с Вектором?;что у нас было с вектором;;search_items;found;search_items;found;True;True;;;0;11
+asr__q24;q24;sim;-;asr;OK;0.333;0.1;Что у нас было с Вектором?;Что у нас было в лектором?;ASR-ошибка не помешала: что у нас было [с→в] [вектором→лектором];search_items;found;search_items;found;True;True;;;0;23
+clean__q25;q25;sim;-;clean;OK;0.0;0.0;Что я должен был отправить Марии?;Что я должен был отправить Марии?;;search_items;found;search_items;found;True;True;;;0;20
+words__q25;q25;sim;-;words;OK;0.0;0.0;Что я должен был отправить Марии?;что я должен был отправить марии;;search_items;found;search_items;found;True;True;;;0;19
+asr__q25;q25;sim;-;asr;A;0.167;0.074;Что я должен был отправить Марии?;Что я должен был отправить Марине?;что я должен был отправить [марии→марине];search_items;found;search_items;found;False;True;;;0;21
+clean__q31;q31;sim;-;clean;OK;0.0;0.0;Перенеси встречу с Марией в субботу на 19:00;Перенеси встречу с Марией в субботу на 19:00;;update_item;updated;update_item;updated;True;True;;;0;27
+words__q31;q31;sim;-;words;B;0.0;0.0;Перенеси встречу с Марией в субботу на 19:00;перенеси встречу с марией в субботу на девятнадцать ноль ноль;транскрипт верный, ответ другой: «Не нашёл запись «встречу с марией на девятнадцать ноль ноль». Уточните»;update_item;none;update_item;updated;False;True;;;0;15
+asr__q31;q31;sim;-;asr;B;0.2;0.154;Перенеси встречу с Марией в субботу на 19:00;Перенеси встречу с Марией в субботу на 19.;транскрипт верный, ответ другой: «Не нашёл запись «встречу с Марией на 19». Уточните, пожалуйста, назван»;update_item;none;update_item;updated;False;True;;;0;15
+clean__q34;q34;sim;-;clean;OK;0.0;0.0;Удали напоминание позвонить Ивану на завтра;Удали напоминание позвонить Ивану на завтра;;delete_item;none;delete_item;none;True;True;;;0;9
+words__q34;q34;sim;-;words;OK;0.0;0.0;Удали напоминание позвонить Ивану на завтра;удали напоминание позвонить ивану на завтра;;delete_item;none;delete_item;none;True;True;;;0;9
+asr__q34;q34;sim;-;asr;OK;0.167;0.026;Удали напоминание позвонить Ивану на завтра;Удали напоминания позвонить Ивану на завтра.;ASR-ошибка не помешала: удали [напоминание→напоминания] позвонить ивану на завтра;delete_item;none;delete_item;none;True;True;;;0;10
+clean__q35;q35;sim;-;clean;OK;0.0;0.0;Слушай, закинь на завтра в полдень созвон с Вектором;Слушай, закинь на завтра в полдень созвон с Вектором;;create_item;created;create_item;created;True;True;;;0;19
+words__q35;q35;sim;-;words;OK;0.0;0.0;Слушай, закинь на завтра в полдень созвон с Вектором;слушай закинь на завтра в полдень созвон с вектором;;create_item;created;create_item;created;True;True;;;0;17
+asr__q35;q35;sim;-;asr;OK;0.0;0.0;Слушай, закинь на завтра в полдень созвон с Вектором;Слушай, закинь на завтра в полдень созвон с вектором.;;create_item;created;create_item;created;True;True;;;0;23
+clean__q40;q40;sim;-;clean;OK;0.0;0.0;Завтра без пятнадцати десять созвон с Пульсом;Завтра без пятнадцати десять созвон с Пульсом;;create_item;created;create_item;created;True;True;;;0;19
+words__q40;q40;sim;-;words;OK;0.0;0.0;Завтра без пятнадцати десять созвон с Пульсом;завтра без пятнадцати десять созвон с пульсом;;create_item;created;create_item;created;True;True;;;0;21
+asr__q40;q40;sim;-;asr;OK;0.143;0.026;Завтра без пятнадцати десять созвон с Пульсом;Завтра без 15 10 созвон с пульсом.;ASR-ошибка не помешала: завтра без [пятнадцати→пятнадцать] десять созвон с пульсом;create_item;created;create_item;created;True;True;;;0;16
+clean__q42;q42;sim;-;clean;OK;0.0;0.0;В среду в 18 созвон с Севером;В среду в 18 созвон с Севером;;create_item;created;create_item;created;True;True;;;0;23
+words__q42;q42;sim;-;words;OK;0.0;0.0;В среду в 18 созвон с Севером;в среду в восемнадцать созвон с севером;;create_item;created;create_item;created;True;True;;;0;19
+asr__q42;q42;sim;-;asr;A;0.143;0.03;В среду в 18 созвон с Севером;В среду в 18 созвон с сервером.;в среду в восемнадцать созвон с [севером→сервером];create_item;created;create_item;created;False;True;;;0;18
+clean__q44;q44;sim;-;clean;OK;0.0;0.0;В следующую среду в 11 демо для Альфы;В следующую среду в 11 демо для Альфы;;create_item;created;create_item;created;True;True;;;0;16
+words__q44;q44;sim;-;words;OK;0.0;0.0;В следующую среду в 11 демо для Альфы;в следующую среду в одиннадцать демо для альфы;;create_item;created;create_item;created;True;True;;;0;17
+asr__q44;q44;sim;-;asr;OK;0.0;0.0;В следующую среду в 11 демо для Альфы;В следующую среду в 11 демо для альфы.;;create_item;created;create_item;created;True;True;;;0;21
+clean__q47;q47;sim;-;clean;OK;0.0;0.0;Встреча с Дмитрием 5 ноября в 14:30 на полтора часа;Встреча с Дмитрием 5 ноября в 14:30 на полтора часа;;create_item;created;create_item;created;True;True;;;0;14
+words__q47;q47;sim;-;words;OK;0.0;0.0;Встреча с Дмитрием 5 ноября в 14:30 на полтора часа;встреча с дмитрием пятого ноября в четырнадцать тридцать на полтора часа;;create_item;created;create_item;created;True;True;;;0;15
+asr__q47;q47;sim;-;asr;OK;0.0;0.0;Встреча с Дмитрием 5 ноября в 14:30 на полтора часа;Встреча с Дмитрием 5 ноября в 14 30 на полтора часа.;;create_item;created;create_item;created;True;True;;;0;20
+clean__q48;q48;sim;-;clean;OK;0.0;0.0;Добавь задачу подготовить ТЗ для Вектора;Добавь задачу подготовить ТЗ для Вектора;;create_item;created;create_item;created;True;True;;;0;12
+words__q48;q48;sim;-;words;B;0.0;0.0;Добавь задачу подготовить ТЗ для Вектора;добавь задачу подготовить тэзэ для вектора;транскрипт верный, ответ другой: «Добавил задачу «Подготовить тэзэ для вектора».»;create_item;created;create_item;created;False;True;;;0;12
+asr__q48;q48;sim;-;asr;A;0.333;0.0;Добавь задачу подготовить ТЗ для Вектора;Добавь задачу подготовить т з для Вектора.;добавь задачу подготовить [+т] [тз→з] для вектора;create_item;created;create_item;created;False;True;;;0;17
+clean__q63;q63;sim;-;clean;OK;0.0;0.0;э-э ну короче напомни это самое завтра в восемь отправить протокол Елене;э-э ну короче напомни это самое завтра в восемь отправить протокол Елене;;create_item;created;create_item;created;True;True;;;0;13
+words__q63;q63;sim;-;words;OK;0.0;0.0;э-э ну короче напомни это самое завтра в восемь отправить протокол Елене;э э ну короче напомни это самое завтра в восемь отправить протокол елене;;create_item;created;create_item;created;True;True;;;0;22
+asr__q63;q63;sim;-;asr;OK;0.154;0.033;э-э ну короче напомни это самое завтра в восемь отправить протокол Елене;Ну короче напомни это самое завтра в 8 отправить протокол Елене.;;create_item;created;create_item;created;True;True;;;0;16
+clean__q78;q78;sim;-;clean;OK;0.0;0.0;Когда ближайший созвон с Альфой?;Когда ближайший созвон с Альфой?;;search_items;found;search_items;found;True;True;;;0;8
+words__q78;q78;sim;-;words;OK;0.0;0.0;Когда ближайший созвон с Альфой?;когда ближайший созвон с альфой;;search_items;found;search_items;found;True;True;;;0;8
+asr__q78;q78;sim;-;asr;A;0.2;0.074;Когда ближайший созвон с Альфой?;Когда ближайший созвон с Альфа?;когда ближайший созвон с [альфой→альфа];search_items;found;search_items;found;False;True;;;0;12
+clean__q80;q80;sim;-;clean;OK;0.0;0.0;Что я обсуждал с Еленой?;Что я обсуждал с Еленой?;;search_items;found;search_items;found;True;True;;;0;18
+words__q80;q80;sim;-;words;OK;0.0;0.0;Что я обсуждал с Еленой?;что я обсуждал с еленой;;search_items;found;search_items;found;True;True;;;0;14
+asr__q80;q80;sim;-;asr;A;0.2;0.053;Что я обсуждал с Еленой?;Что я обсуждал с Алёной?;что я обсуждал с [еленой→аленой];search_items;found;search_items;found;False;True;;;0;18
+clean__q89;q89;sim;-;clean;OK;0.0;0.0;Перенеси созвон с Орбитой на 16:30;Перенеси созвон с Орбитой на 16:30;;update_item;updated;update_item;updated;True;True;;;0;21
+words__q89;q89;sim;-;words;B;0.0;0.0;Перенеси созвон с Орбитой на 16:30;перенеси созвон с орбитой на шестнадцать тридцать;транскрипт верный, ответ другой: «Не нашёл запись «созвон с орбитой на шестнадцать тридцать». Уточните, »;update_item;none;update_item;updated;False;True;;;0;19
+asr__q89;q89;sim;-;asr;A;0.143;0.023;Перенеси созвон с Орбитой на 16:30;Перенеси созвон с арбитой на 16:30.;перенеси созвон с [орбитой→арбитой] на шестнадцать тридцать;update_item;none;update_item;updated;False;True;;;0;14
+words__q02;q02;sim;-;words;OK;0.0;0.0;В пятницу нужно отправить отчет;в пятницу нужно отправить отчет;;create_item;created;create_item;created;True;True;;;0;21
+words__q03;q03;sim;-;words;OK;0.0;0.0;Поставь задачу купить билеты до конца недели;поставь задачу купить билеты до конца недели;;create_item;created;create_item;created;True;True;;;0;22
+words__q05;q05;sim;-;words;OK;0.0;0.0;В четверг в 11 у меня встреча с дизайнером;в четверг в одиннадцать у меня встреча с дизайнером;;create_item;created;create_item;created;True;True;;;0;19
+words__q06;q06;sim;-;words;OK;0.0;0.0;Через два часа напомни проверить почту;через два часа напомни проверить почту;;create_item;created;create_item;created;True;True;;;0;11
+words__q08;q08;sim;-;words;OK;0.0;0.0;Поставь встречу с Иваном завтра;поставь встречу с иваном завтра;;create_item;clarify;create_item;clarify;True;True;;;0;6
+words__q09;q09;sim;-;words;OK;0.0;0.0;Напомни про договор;напомни про договор;;create_item;clarify;create_item;clarify;True;True;;;0;5
+words__q11;q11;sim;-;words;OK;0.0;0.0;Что у меня сегодня?;что у меня сегодня;;list_items;listed;list_items;listed;True;True;;;0;11
+words__q12;q12;sim;-;words;OK;0.0;0.0;Какие планы на сегодня?;какие планы на сегодня;;list_items;listed;list_items;listed;True;True;;;0;12
+words__q13;q13;sim;-;words;OK;0.0;0.0;Есть ли у меня встречи сегодня?;есть ли у меня встречи сегодня;;list_items;listed;list_items;listed;True;True;;;0;8
+words__q14;q14;sim;-;words;OK;0.0;0.0;Какие задачи у меня на завтра?;какие задачи у меня на завтра;;list_items;listed;list_items;listed;True;True;;;0;7
+words__q15;q15;sim;-;words;OK;0.0;0.0;Что запланировано на эту неделю?;что запланировано на эту неделю;;list_items;listed;list_items;listed;True;True;;;0;12
+words__q16;q16;sim;-;words;OK;0.0;0.0;А на следующей неделе?;а на следующей неделе;;list_items;listed;list_items;listed;True;True;;;0;9
+words__q17;q17;sim;-;words;OK;0.0;0.0;Что у меня в субботу?;что у меня в субботу;;list_items;listed;list_items;listed;True;True;;;0;8
+words__q18;q18;sim;-;words;OK;0.0;0.0;Покажи все встречи в ноябре;покажи все встречи в ноябре;;list_items;listed;list_items;listed;True;True;;;0;11
+words__q20;q20;sim;-;words;OK;0.0;0.0;Найди задачу про презентацию;найди задачу про презентацию;;search_items;found;search_items;found;True;True;;;0;47
+words__q21;q21;sim;-;words;OK;0.0;0.0;Я когда-то ставил задачу по договору, найди её;я когда то ставил задачу по договору найди ее;;search_items;found;search_items;found;True;True;;;0;57
+words__q23;q23;sim;-;words;OK;0.0;0.0;Найди демо по мобилке;найди демо по мобилке;;search_items;found;search_items;found;True;True;;;0;34
+words__q26;q26;sim;-;words;OK;0.0;0.0;Найди планёрки по деньгам;найди планерки по деньгам;;search_items;found;search_items;found;True;True;;;0;41
+words__q27;q27;sim;-;words;OK;0.0;0.0;Какие были напоминалки про CRM?;какие были напоминалки про срм;;search_items;found;search_items;found;True;True;;;0;22
+words__q28;q28;sim;-;words;OK;0.0;0.0;Найди всё про ТЗ;найди все про тз;;search_items;found;search_items;found;True;True;;;0;28
+words__q29;q29;sim;-;words;OK;0.0;0.0;созвоны со Стартом;созвоны со стартом;;search_items;found;search_items;found;True;True;;;0;13
+words__q30;q30;sim;-;words;OK;0.0;0.0;Найди встречу с Петром;найди встречу с петром;;search_items;found;search_items;found;True;True;;;0;12
+words__q32;q32;sim;-;words;OK;0.0;0.0;А её перенеси на завтра;а ее перенеси на завтра;;update_item;clarify;update_item;clarify;True;True;;;0;7
+words__q33;q33;sim;-;words;OK;0.0;0.0;Отметь, что смету по мобильному приложению я проверил;отметь что смету по мобильному приложению я проверил;;complete_item;completed;complete_item;completed;True;True;;;0;119
+words__q36;q36;sim;-;words;OK;0.0;0.0;Запиши: в понедельник к девяти подготовить отчёт;запиши в понедельник к девяти подготовить отчет;;create_item;created;create_item;created;True;True;;;0;14
+words__q37;q37;sim;-;words;OK;0.0;0.0;Послезавтра в 3 встреча с Ольгой;послезавтра в три встреча с ольгой;;create_item;created;create_item;created;True;True;;;0;22
+words__q38;q38;sim;-;words;OK;0.0;0.0;Напомни вечером купить молоко;напомни вечером купить молоко;;create_item;created;create_item;created;True;True;;;0;21
+words__q39;q39;sim;-;words;OK;0.0;0.0;Напомни утром позвонить Сергею;напомни утром позвонить сергею;;create_item;created;create_item;created;True;True;;;0;17
+words__q41;q41;sim;-;words;OK;0.0;0.0;Через 11 часов напомни проверить сервер;через одиннадцать часов напомни проверить сервер;;create_item;created;create_item;created;True;True;;;0;20
+words__q43;q43;sim;-;words;OK;0.0;0.0;В среду в 10 провести планёрку;в среду в десять провести планерку;;create_item;created;create_item;created;True;True;;;0;25
+words__q45;q45;sim;-;words;B;0.0;0.0;Каждый понедельник в 10 планёрка по CRM;каждый понедельник в десять планерка по срм;транскрипт верный, ответ другой: «Записал повторяющуюся встречу «Планёрка по срм» — каждый понедельник, »;create_item;created;create_item;created;False;True;;;0;20
+words__q46;q46;sim;-;words;OK;0.0;0.0;Напоминай каждый день в 9 проверять почту;напоминай каждый день в девять проверять почту;;create_item;created;create_item;created;True;True;;;0;14
+words__q49;q49;sim;-;words;OK;0.0;0.0;Поставь демо проекта 1 ноября в 15:00;поставь демо проекта первого ноября в пятнадцать ноль ноль;;create_item;conflict;create_item;conflict;True;True;;;0;13
+words__q50;q50;sim;-;words;OK;0.0;0.0;Встреча с Еленой в субботу в 20:00;встреча с еленой в субботу в двадцать ноль ноль;;create_item;conflict;create_item;conflict;True;True;;;0;16
+words__q55;q55;sim;-;words;OK;0.0;0.0;Напомни;напомни;;create_item;clarify;create_item;clarify;True;True;;;0;6
+words__q64;q64;sim;-;words;OK;0.0;0.0;Покажи мои встречи на сегодня;покажи мои встречи на сегодня;;list_items;listed;list_items;listed;True;True;;;0;7
+words__q65;q65;sim;-;words;OK;0.0;0.0;Чем я занят завтра?;чем я занят завтра;;list_items;listed;list_items;listed;True;True;;;0;8
+words__q66;q66;sim;-;words;OK;0.0;0.0;Что у меня в пятницу?;что у меня в пятницу;;list_items;listed;list_items;listed;True;True;;;0;39
+words__q67;q67;sim;-;words;OK;0.0;0.0;Что у меня на выходных?;что у меня на выходных;;list_items;listed;list_items;listed;True;True;;;0;9
+words__q68;q68;sim;-;words;OK;0.0;0.0;Что было вчера?;что было вчера;;list_items;listed;list_items;listed;True;True;;;0;9
+words__q69;q69;sim;-;words;OK;0.0;0.0;Что было на прошлой неделе?;что было на прошлой неделе;;list_items;listed;list_items;listed;True;True;;;0;9
+words__q70;q70;sim;-;words;OK;0.0;0.0;Какие встречи на следующей неделе?;какие встречи на следующей неделе;;list_items;listed;list_items;listed;True;True;;;0;9
+words__q71;q71;sim;-;words;OK;0.0;0.0;Есть напоминания на декабрь?;есть напоминания на декабрь;;list_items;listed;list_items;listed;True;True;;;0;9
+words__q72;q72;sim;-;words;OK;0.0;0.0;Что у меня осталось до конца недели?;что у меня осталось до конца недели;;list_items;listed;list_items;listed;True;True;;;0;12
+words__q73;q73;sim;-;words;OK;0.0;0.0;Что запланировано на ноябрь?;что запланировано на ноябрь;;list_items;listed;list_items;listed;True;True;;;0;12
+words__q75;q75;sim;-;words;OK;0.0;0.0;Что у меня 31 ноября?;что у меня тридцать первого ноября;;list_items;clarify;list_items;clarify;True;True;;;0;6
+words__q76;q76;sim;-;words;OK;0.0;0.0;Когда я в последний раз звонил Ивану?;когда я в последний раз звонил ивану;;search_items;found;search_items;found;True;True;;;0;16
+words__q77;q77;sim;-;words;OK;0.0;0.0;Когда следующая встреча с Иваном?;когда следующая встреча с иваном;;search_items;found;search_items;found;True;True;;;0;10
+words__q81;q81;sim;-;words;OK;0.0;0.0;Найди все КП;найди все кп;;search_items;found;search_items;found;True;True;;;0;33
+words__q82;q82;sim;-;words;OK;0.0;0.0;Когда я последний раз готовился к встрече с Вектором?;когда я последний раз готовился к встрече с вектором;;search_items;found;search_items;found;True;True;;;0;17
+words__q83;q83;sim;-;words;OK;0.0;0.0;Что у меня было по хакатону в этом году?;что у меня было по хакатону в этом году;;search_items;found;search_items;found;True;True;;;0;25
+words__q84;q84;sim;-;words;C;0.0;0.0;Когда была последняя планёрка по деньгам?;когда была последняя планерка по деньгам;не прошли: recall5, top1;search_items;none;search_items;none;True;False;;;0;9
+words__q85;q85;sim;-;words;OK;0.0;0.0;Была ли у меня встреча с дизайнером?;была ли у меня встреча с дизайнером;;search_items;none;search_items;none;True;True;;;0;11
+words__q86;q86;sim;-;words;C;0.0;0.0;Найди всё, что связано с деньгами и Иваном;найди все что связано с деньгами и иваном;не прошли: recall5;search_items;none;search_items;none;True;False;;;0;10
+words__q87;q87;sim;-;words;C;0.0;0.0;Какие встречи с Иваном были в прошлом году?;какие встречи с иваном были в прошлом году;не прошли: recall5;search_items;none;search_items;none;True;False;;;0;10
+words__q90;q90;sim;-;words;C;0.0;0.0;Сдвинь планёрку по интеграции 18 ноября на час позже;сдвинь планерку по интеграции восемнадцатого ноября на час позже;не прошли: edit;update_item;none;update_item;none;True;False;;;0;10
+words__q91;q91;sim;-;words;C;0.0;0.0;Перенеси встречу с Марией на час раньше;перенеси встречу с марией на час раньше;не прошли: edit;update_item;none;update_item;none;True;False;;;0;10
+words__q94;q94;sim;-;words;C;0.0;0.0;Готово, вопросы для Максима подготовил;готово вопросы для максима подготовил;не прошли: edit;complete_item;none;complete_item;none;True;False;;;0;9
+words__q95;q95;sim;-;words;C;0.0;0.0;Удали созвон с Альфой первого ноября;удали созвон с альфой первого ноября;не прошли: edit;delete_item;none;delete_item;none;True;False;;;0;11
+words__q98;q98;sim;-;words;OK;0.0;0.0;Привет! Что ты умеешь?;привет что ты умеешь;;smalltalk;none;smalltalk;none;True;True;;;0;6
+words__q99;q99;sim;-;words;OK;0.0;0.0;Какая погода завтра?;какая погода завтра;;unknown;none;unknown;none;True;True;;;0;5

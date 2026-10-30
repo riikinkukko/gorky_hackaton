@@ -1,0 +1,31 @@
+{
+  "name": "pomnyu-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:mock": "vite --mode mock",
+    "build": "tsc -b && vite build",
+    "build:preview": "vite build --mode preview",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "seed": "python3 scripts/csv_to_seed.py ../data/voice_assistant_events_1000.csv src/mock/seed.json",
+    "check:contract": "tsc -p tsconfig.contract.json"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vite-plugin-pwa": "^2.0.0",
+    "vite-plugin-singlefile": "^2.3.4"
+  }
+}

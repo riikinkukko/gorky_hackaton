@@ -1,0 +1,39 @@
+# SITE_ADDRESS:
+#   локально — :8080 (http://localhost:8080, микрофон на localhost разрешён);
+#   на VPS — домен, например assistant.example.ru или 203-0-113-7.sslip.io →
+#   Caddy сам получит сертификат Let's Encrypt и включит HTTPS (нужны открытые 80 и 443).
+{
+	email {$ACME_EMAIL:admin@example.com}
+	# SEC-17: X-Forwarded-For принимаем только от прокси в частных сетях (nginx на хосте, docker)
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+{$SITE_ADDRESS::8080} {
+	encode zstd gzip
+
+	@backend path /api/* /ws/* /calendar/* /health /docs /docs/* /openapi.json
+	handle @backend {
+		reverse_proxy api:8000
+	}
+
+	handle {
+		reverse_proxy web:80
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "microphone=(self)"
+		# SEC-09: боевой режим — шрифты web/v4 раздаёт сам, внешних источников нет
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self' wss://{host}; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+		X-Frame-Options DENY
+		-Server
+	}
+	log {
+		output stdout
+		format console
+	}
+}

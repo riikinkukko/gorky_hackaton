@@ -1,0 +1,59 @@
+# Режим «сосед»: сервер уже занят другим приложением, его веб-сервер (nginx/Caddy) держит 80/443.
+# Наш стек слушает только 127.0.0.1:8080 (наружу не открыт), HTTPS делает существующий веб-сервер.
+#   docker compose -f docker-compose.yml -f docker-compose.shared.yml up -d --build
+# Конфиги для внешнего веб-сервера: deploy/shared/.
+# Лимиты CPU/памяти/процессов — чтобы наш стек не мог задушить соседнее приложение (SEC-05).
+x-logging: &logging
+  driver: json-file
+  options: {max-size: "10m", max-file: "3"}
+
+services:
+  api:
+    environment:
+      APP_ENV: prod
+      # без секрета compose не стартует, и старая версия продолжает работать (SEC-01)
+      SESSION_SECRET: ${SESSION_SECRET:?Задайте SESSION_SECRET в .env (openssl rand -hex 32)}
+    deploy:
+      resources:
+        limits:
+          memory: ${API_MEM_LIMIT:-2500m}   # голосовые модели ~1,1–2 ГБ
+          cpus: "1.5"
+          pids: 256
+    pids_limit: 256
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    logging: *logging
+  db:
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: "0.5"
+          pids: 256
+    pids_limit: 256
+    security_opt: ["no-new-privileges:true"]
+    logging: *logging
+  web:
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+          cpus: "0.5"
+          pids: 256
+    pids_limit: 256
+    security_opt: ["no-new-privileges:true"]
+    logging: *logging
+  caddy:
+    environment:
+      SITE_ADDRESS: ":8080"
+    ports:
+      - "127.0.0.1:8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+          cpus: "0.5"
+          pids: 256
+    pids_limit: 256
+    security_opt: ["no-new-privileges:true"]
+    logging: *logging

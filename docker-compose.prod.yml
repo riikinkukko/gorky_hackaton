@@ -1,0 +1,13 @@
+# Прод на VPS:  docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# (override.yml при явном -f не подхватывается — порт БД наружу не открыт).
+services:
+  api:
+    environment:
+      APP_ENV: prod
+  caddy:
+    environment:
+      SITE_ADDRESS: ${DOMAIN:?Укажите DOMAIN в .env}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"

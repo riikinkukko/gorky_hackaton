@@ -1,0 +1,5 @@
+# Если на сервере уже стоит Caddy (а не nginx) — добавьте блок в его Caddyfile и выполните `caddy reload`.
+# Сертификат Caddy выпустит сам. WebSocket проксируется автоматически.
+VOICE_DOMAIN {
+	reverse_proxy 127.0.0.1:8080
+}
