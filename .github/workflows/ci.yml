@@ -73,7 +73,7 @@ jobs:
         working-directory: frontend
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: npm
@@ -109,7 +109,7 @@ jobs:
       - name: pip-audit
         working-directory: backend
         run: pip install -q -e . pip-audit && pip-audit --skip-editable
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
       - name: npm audit
