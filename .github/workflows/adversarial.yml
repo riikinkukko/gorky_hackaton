@@ -59,7 +59,7 @@ jobs:
         run: |
           python -m eval.run_sessions --out ses_report.md --json ses_rows.json
           cat ses_report.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: adversarial
           path: |
