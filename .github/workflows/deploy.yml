@@ -21,7 +21,7 @@ jobs:
     # SEC-04: секреты VPS — в Environment «production»; в его настройках можно включить ручное подтверждение
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Check secrets
         id: check
         env:
