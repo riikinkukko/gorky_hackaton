@@ -11,7 +11,7 @@ ENV VITE_USE_MOCK=$VITE_USE_MOCK VITE_FREEZE_NOW=$VITE_FREEZE_NOW
 RUN npm run build
 
 # Раздача: nginx на :80, Caddy проксирует сюда всё, кроме /api, /ws, /calendar, /health
-FROM nginx:1.27-alpine
+FROM nginx:1.31-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
